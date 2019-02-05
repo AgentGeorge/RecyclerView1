@@ -11,12 +11,7 @@ import java.util.ArrayList;
 
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
-    protected MyPresenter presenter;
     private ArrayList<Record> records;
-
-    public MyAdapter(ArrayList<Record> results) {
-        this.records = results;
-    }
 
     //Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
     @Override

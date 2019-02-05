@@ -5,12 +5,21 @@ import java.util.ArrayList;
 
 public class MyPresenter {
 
-    private MyView view;
+    private MyView mainView;
     private MyModel model;
+    private ArrayList<Record> records;
 
-    public MyPresenter(ArrayList<Record> results, MyView view) {
-        this.view = view;
-        this.model = new MyModel(results, view);
+    public void MyPresenter(){
+        records = new ArrayList<>();
+    }
+
+
+    public void attachView(MyView view) {
+        mainView = view;
+    }
+
+    public void detachView() {
+        mainView = null;
     }
 
     public Record getRecord(int i) {
@@ -25,5 +34,7 @@ public class MyPresenter {
     public int getItemCount() {
         return model.getItemCount();
     }
+
+
 
 }
