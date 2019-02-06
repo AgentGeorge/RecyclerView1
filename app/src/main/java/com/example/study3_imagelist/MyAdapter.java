@@ -9,9 +9,14 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 
+
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.ViewHolder> {
 
     private ArrayList<Record> records;
+
+    public MyAdapter(ArrayList<Record> records) {
+        this.records = records;
+    }
 
     //Создание новых View и ViewHolder элемента списка, которые впоследствии могут переиспользоваться.
     @Override

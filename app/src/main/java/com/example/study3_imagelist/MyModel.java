@@ -15,8 +15,7 @@ public class MyModel {
     private ArrayList<Record> results;
     private MyView myView;
 
-    public MyModel(ArrayList<Record> mResults, MyView myView) {
-        results = mResults;
+    public MyModel(MyView myView) {
         this.myView = myView;
     }
 
@@ -24,7 +23,8 @@ public class MyModel {
         return results.get(i);
     }
 
-    public void LoadImagesContent() {
+    public void LoadImagesContent(ArrayList<Record> mresults) {
+        results = mresults;
 
         Uri sourceUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 

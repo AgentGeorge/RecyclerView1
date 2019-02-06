@@ -15,9 +15,10 @@ import java.util.ArrayList;
 
 
 public class MyView extends Activity {
-    MyAdapter adapter;
+    private MyAdapter adapter;
     Handler handler;
     MyPresenter presenter;
+    private ArrayList<Record> records = new ArrayList<>();
     final int REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE = 0;
 
     @Override
@@ -49,9 +50,9 @@ public class MyView extends Activity {
 
         presenter = new MyPresenter();
         presenter.attachView(this);
-        presenter.ViewStarted();
+        presenter.ViewStarted(records);
 
-        adapter = new MyAdapter();
+        adapter = new MyAdapter(records);
         mRecyclerView.setAdapter(adapter);
     }
 

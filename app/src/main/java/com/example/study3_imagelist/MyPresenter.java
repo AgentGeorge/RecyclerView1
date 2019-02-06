@@ -7,33 +7,29 @@ public class MyPresenter {
 
     private MyView mainView;
     private MyModel model;
-    private ArrayList<Record> records;
-
-    public void MyPresenter(){
-        records = new ArrayList<>();
-    }
-
 
     public void attachView(MyView view) {
         mainView = view;
+        model = new MyModel(view);
     }
 
     public void detachView() {
         mainView = null;
+//        model = null;
+    }
+
+    public void ViewStarted(ArrayList<Record> records) {
+        model.LoadImagesContent(records);
     }
 
     public Record getRecord(int i) {
         return model.getRecord(i);
     }
 
-
-    public void ViewStarted() {
-        model.LoadImagesContent();
-    }
-
     public int getItemCount() {
         return model.getItemCount();
     }
+
 
 
 
