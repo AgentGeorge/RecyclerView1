@@ -14,10 +14,11 @@ import android.support.v7.widget.RecyclerView;
 import java.util.ArrayList;
 
 
-public class MyView extends Activity {
+public class MyView extends Activity implements MyContract.View{
     private MyAdapter adapter;
-    Handler handler;
-    MyPresenter presenter;
+    RecyclerView recyclerView;
+//    Handler handler;
+    MyContract.Presenter presenter;
     private ArrayList<Record> records = new ArrayList<>();
     final int REQUEST_CODE_PERMISSION_READ_EXTERNAL_STORAGE = 0;
 
@@ -35,27 +36,6 @@ public class MyView extends Activity {
         }
     }
 
-    public void init(){
-        setContentView(R.layout.activity_main);
-
-        RecyclerView mRecyclerView = (RecyclerView) findViewById(R.id.recyclerView1);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-
-        handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                adapter.notifyItemChanged(msg.what);
-            }
-        };
-
-        presenter = new MyPresenter();
-        presenter.attachView(this);
-        presenter.ViewStarted(records);
-
-        adapter = new MyAdapter(records);
-        mRecyclerView.setAdapter(adapter);
-    }
-
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         if (grantResults.length > 0
@@ -63,6 +43,50 @@ public class MyView extends Activity {
             // permission granted
             init();
         }
+    }
+
+    public void init(){
+        setContentView(R.layout.activity_main);
+
+        recyclerView = (RecyclerView) findViewById(R.id.recyclerView1);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        MainApp mainApp = ((MainApp) getApplicationContext());
+        presenter = mainApp.getPresenter();
+        presenter.attachView(this);
+
+//        handler = new Handler() {
+//            @Override
+//            public void handleMessage(Message msg) {
+//                adapter.notifyItemChanged(msg.what);
+//            }
+//        };
+
+        runOnUiThread(new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        while (!presenter.allDataLoaded()) {
+                            presenter.refreshData();
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+        }));
+
+    }
+
+    @Override
+    public MyAdapter getAdapter(){
+        return adapter;
+    }
+
+    @Override
+    public void setAdapterOnRecycler(MyAdapter adapter){
+        this.adapter = adapter;
+        recyclerView.setAdapter(adapter);
     }
 
     @Override

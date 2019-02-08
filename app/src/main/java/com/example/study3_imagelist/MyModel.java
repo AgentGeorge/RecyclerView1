@@ -10,22 +10,17 @@ import android.support.v4.content.CursorLoader;
 import java.util.ArrayList;
 
 
-public class MyModel {
+public class MyModel implements MyContract.Model{
 
-    private ArrayList<Record> results;
-    private MyView myView;
+    private ArrayList<Record> results = new ArrayList<>();
+    boolean allDataLoaded = false;
 
-    public MyModel(MyView myView) {
-        this.myView = myView;
+    public ArrayList<Record> getRecords() {
+        return results;
     }
 
-    public Record getRecord(int i) {
-        return results.get(i);
-    }
-
-    public void LoadImagesContent(ArrayList<Record> mresults) {
-        results = mresults;
-
+    @Override
+    public void PreLoadImages(MyView myView) {
         Uri sourceUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI;
 
         String[] projection = {MediaStore.Images.Media.DISPLAY_NAME, MediaStore.Images.Media.DATA};
@@ -46,7 +41,10 @@ public class MyModel {
             cursor.moveToNext();
         }
         cursor.close();
+    }
 
+    @Override
+    public void LoadImagesContent() {
         Thread t = new Thread(new Runnable() {
             public void run() {
                 int origWidth, origHeight, newWidth, newHeight;
@@ -71,16 +69,15 @@ public class MyModel {
                     record.icon = bmp;
                     record.iconEmpty = false;
 
-                    myView.handler.sendEmptyMessage(i);
-
-                }
+                };
+                allDataLoaded = true;
             }
         });
         t.start();
     }
 
-    public int getItemCount() {
-        return results.size();
+    public boolean allDataLoaded(){
+        return allDataLoaded;
     }
 
 }

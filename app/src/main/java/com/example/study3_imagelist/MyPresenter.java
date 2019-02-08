@@ -3,34 +3,51 @@ package com.example.study3_imagelist;
 
 import java.util.ArrayList;
 
-public class MyPresenter {
+public final class MyPresenter implements MyContract.Presenter{
 
-    private MyView mainView;
-    private MyModel model;
+    private static MyPresenter mInstance;
+    private MyContract.View mainView;
+    private MyContract.Model model;
 
+    public static void initInstance() {
+        if (mInstance == null) {
+            mInstance = new MyPresenter();
+        }
+    }
+
+    public static MyPresenter getInstance() {
+        return mInstance;
+    }
+
+    @Override
     public void attachView(MyView view) {
         mainView = view;
-        model = new MyModel(view);
+        if (model == null) {
+            model = new MyModel();
+            model.PreLoadImages(view);
+            model.LoadImagesContent();
+        }
+
+        MyAdapter adapter = new MyAdapter(model.getRecords());
+        mainView.setAdapterOnRecycler(adapter);
     }
 
+    @Override
     public void detachView() {
         mainView = null;
-//        model = null;
     }
 
-    public void ViewStarted(ArrayList<Record> records) {
-        model.LoadImagesContent(records);
+    @Override
+    public boolean allDataLoaded(){
+        return model.allDataLoaded();
     }
 
-    public Record getRecord(int i) {
-        return model.getRecord(i);
+    @Override
+    public void refreshData(){
+        if (mainView != null) {
+            MyAdapter adapter = mainView.getAdapter();
+            adapter.notifyDataSetChanged();
+        }
     }
-
-    public int getItemCount() {
-        return model.getItemCount();
-    }
-
-
-
 
 }
